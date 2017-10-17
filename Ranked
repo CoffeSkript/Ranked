@@ -40,6 +40,7 @@ on rightclick with wood axe:
 		make player execute command "/unranked leave"
 		
 on rightclick with diamond axe:
+	if name of player's tool contains "&e&LRANKED":
 		make player execute command "/ffa join"
 		send "&8&m------------------"
 		send "&8     "
@@ -74,7 +75,8 @@ on respawn:
 	
 on quit:
 	set quit message to "&6[&c-&7] &c%player%"
-	execute player command "/ffa leave"
+	make player execute command "/ffa leave"
+	make player execute command "/unranked leave"
 	clear player's inventory
 
 on death:
@@ -86,6 +88,7 @@ command /class:
 			teleport player to {ffa.spawn}
 			remove absorption from player
 			remove regeneration from player
+			remove speed from player
 			heal player
 			set gamemode of player to survival
 			clear player's inventory
@@ -120,10 +123,10 @@ command /class:
 		
 command /class2:
 	trigger:
-		if player have permission "class.2":
 		teleport player to {ffa.spawn}
 		remove absorption from player
 		remove regeneration from player
+		remove speed from player
 		heal player
 		set gamemode of player to survival
 		clear player's inventory
@@ -132,10 +135,8 @@ command /class2:
 		set player's chestplate to iron chestplate
 		set player's leggings to iron leggings
 		set player's boots to iron boots
-		give 1 stone axe to player			
-		give 1 bow to player
-		give 1 fishing rod to player
-		give 4 arrow to player
+		give 1 diamond axe of sharpness 4 to player
+		apply speed 1 to the player for 10000 seconds		
 		give 1 golden apple named "&6Golden Head" to player
 		else:
 		send "&cYou can buy this kit at the store"
@@ -396,3 +397,4 @@ on death:
 		send "&a%{points.%victim%}% &cRating &8[&c-5&8])" to victim
 	else if {joined.%player%} is "no":
 		send "&7"
+		
