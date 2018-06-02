@@ -1,0 +1,419 @@
+# Creator: Luythen
+options:
+    _Elo: 500 
+
+on join:
+	heal player
+		
+on rightclick with chest:
+		open chest with 3 rows named "&f&lSTORE" to player
+		wait 2 tick
+		format slot 13 of player with book named "&c&lMORE KITS COMING SOON" to close
+		
+on rightclick with name tag:
+    if name of playeräs tool contains "&f&lUNRANKED KITS":
+		open chest with 3 rows named "&f&lUnranked Kits" to player
+		wait 2 tick
+		format slot 10 of player with book named "&e&lDefault" to run [make player execute command "/class"]
+		format slot 11 of player with book named "&f&lScout" to run [make player execute command "/class2"]
+		format slot 12 of player with book named "&f&lTank" to run [make player execute command "/class3"]
+		
+on rightclick with wood sword:
+    if name of player's tool contains "&e&lLEAVE UNRANKED":
+		make player execute command "/ffa leave"
+        
+on respawn:
+	if {joined.%player%} is "yes":
+		teleport player to {joined.spawn}
+		remove absorption from player
+		remove regeneration from player
+		heal player
+		set gamemode of player to survival
+		clear player's inventory
+		wait 3 tick
+        set slot 1 of player to wood sword named "&6&lLEAVE"
+		set slot 4 of player to name tag named "&f&lKITS"
+		set slot 7 of player to chest named "&6&LSTORE"
+	
+on quit:
+	make player execute command "/ffa leave"
+	clear player's inventory
+
+on death:
+    clear drops
+	
+	
+command /class:
+	trigger:
+		if {joined.%player%} is "yes":
+			remove absorption from player
+			remove regeneration from player
+			remove speed from player
+			heal player
+			set gamemode of player to survival
+			clear player's inventory
+			wait 3 tick
+			set player's helmet to iron helmet
+			set player's chestplate to iron chestplate
+			set player's leggings to iron leggings
+			set player's boots to iron boots
+			give 1 diamond sword of sharpness 1 to player
+			give 1 bow of unbreaking 10 to player
+			give 1 fishing rod of unbreaking 10 to player
+			give 4 arrow to player			
+			give 1 golden apple named "&6Golden Head" to player
+			
+		
+command /class2:
+	trigger:
+		if {unranked.%player%} is "yes":
+			remove absorption from player
+			remove regeneration from player
+			remove speed from player
+			heal player
+			set gamemode of player to survival
+			clear player's inventory
+			wait 3 tick
+			set player's helmet to chainmail helmet
+			set player's chestplate to iron chestplate
+			set player's leggings to iron leggings
+			set player's boots to iron boots
+			give 1 diamond axe of sharpness 4 and unbreaking 10 to player
+			apply speed 1 to the player for 10000 seconds		
+			give 1 golden apple named "&6Golden Head" to player
+
+command /class3:
+	trigger:
+		if {join.%player%} is "yes":
+			teleport player to {unranke.spawn}
+			remove absorption from player
+			remove regeneration from player
+			remove speed from player
+			heal player
+			set gamemode of player to survival
+			clear player's inventory
+			wait 3 tick
+			set player's helmet to diamond helmet
+			set player's chestplate to diamond chestplate
+			set player's leggings to diamond leggings
+			set player's boots to diamond boots
+			give 1 iron sword of unbreaking 10 to player
+			apply slowness 2 to the player for 10000 seconds		
+			give 1 golden apple named "&6Golden Head" to player
+
+command /ffa  [<text>] [<text>]:
+	usage: &6Correct Usage &8(&e/ffa join / leave&8)
+	executable by: players
+	trigger:
+        if arg-1 is "help":
+            if arg-2 is not set:
+            send "         &f&lFFA"
+            send "   &eVerison: 1.0.1 &8Beta"
+            send "       &7&m-------"
+            send "  "
+		    send "&9/elo <player> &7 checks your rating"
+		    send "&9/stats <player> &7 shows our stats"
+	        send "&9/coins <player> &7 shows our coins"
+            send "&9/report <player> <reason> &7report a cheater"
+	       	send "&9/ffa admin &7show admin commands"
+	       	send "       &7&m-------"
+            send "  "
+        else if arg-1 is "admin":
+            if arg-2 is not set:
+            if player has permission "ffa.admin"
+            send "      &f&lFFA &cAdmin"
+            send "   &eVerison: 1.0.1 &8Beta"
+            send "       &7&m-------"
+            send "  "
+		    send "&9/setffa &7set spawn for ranked/unranked"
+	       	send "&9/Clearchat &7Clears chat"
+	       	send "&9/elo set <player> &7set elo of any player"
+	       	send "&9/coins set <player> &7set coins of any player"
+	       	send "&9/ffa setlobby &7setspawn point on join"
+		    send "&7&m---------------------"
+        else if arg-1 is "setlobby"
+            if arg-2 is not set:
+            set {lobby.spawn} to location of player
+			send "&aLobby has been set successfully!"
+        else if arg-1 is "setffa":
+            if arg-2 is "spawn"
+                set {ranked.spawn} to location of player
+			    send "&aLobby has been set successfully!"
+		else if arg-1 is "join":
+            if arg-2 is not set::
+			if {joined.%player%} is "yes":
+				send " &cYou're already in the game!"
+			else:
+				send "&5"
+				set {joined.%player%} to "yes"
+				teleport player to {ranked.spawn}
+				remove absorption from player
+				remove regeneration from player
+				heal player
+				set gamemode of player to survival
+				clear player's inventory
+				wait 3 tick
+				set slot 1 of player to wood sword named "&e&lLEAVE UNRANKED"
+				set slot 4 of player to name tag named "&f&lUNRANKED KITS"
+				set slot 7 of player to chest named "&f&LSTORE"
+		else if arg-1 is "leave":
+            if arg-2 is not set:
+			if {joined.%player%} is "no":
+				send " &cYou are not in the game!"
+			else:
+				send " &cYou left the game!"
+				set {joined.%player%} to "no"
+				clear player's inventory
+				wait 3 tick
+		else:
+			send " &4This command does not exist!"
+            
+command /report [<text>] [<player>] [<text>]:
+    if arg-1 is not set:
+        if arg-2 is set:
+            if arg-3 is set:
+                send "&c[Report] &eKillaura &7shortening &e[KA], &eBhop &7shortening &e[B], &eReach &7shortening &e[R]"
+                send "&eFly &7shortening &e[F], &eSpeed &7shortening &e[S]"
+        else if arg-1 is not set:
+            if arg-2 is set:
+                if arg-3 is "Killaura":
+                    send "&aThank you for reporting &f%arg-2% &afor &eKillaura[KA]"
+                    add 1 to {report.%arg-2%}
+                    loop all players:
+                        if loop player has permission "ffa.seereport":
+                            send "&c[Report] &a%arg-2%&7[%{report.%arg-2%}%] &7for &aKillaura[KA]" to loop-player
+            else if arg-3 is "KA":
+                send "&aThank you for reporting &f%arg-2% &afor &eKillaura[KA]"
+                add 1 to {report.%arg-2%}
+                loop all players:
+                    if loop player has permission "ffa.seereport":
+                        send "&c[Report] &a%arg-2%&7[%{report.%arg-2%}%] &7for &aKillaura[KA]" to loop-player
+            else if arg-3 is "Bhop":
+                send "&aThank you for reporting &f%arg-2% &afor &eBhop[B]"
+                add 1 to {report.%arg-2%}
+                loop all players:
+                    if loop player has permission "ffa.seereport":
+                        send "&c[Report] &a%arg-2%&7[%{report.%arg-2%}%] &7for &aBhop[B]" to loop-player
+            else if arg-3 is "B":
+                send "&aThank you for reporting &f%arg-2% &afor &eBhop[B]"
+                add 1 to {report.%arg-2%}
+                loop all players:
+                    if loop player has permission "ffa.seereport":
+                        send "&c[Report] &a%arg-2%&7[%{report.%arg-2%}%] &7for &aBhop[B]" to loop-player
+            else if arg-3 is "Fly":
+                add 1 to {report.%arg-2%}
+                send "&aThank you for reporting &f%arg-1% &afor &eFly[F]"
+                loop all players:
+                    if loop player has permission "ffa.seereport":
+                        send "&c[Report] &a%arg-2%&7[%{report.%arg-2%}%] &7for &aFly[F]" to loop-player
+            else if arg-3 is "F":
+                send "&aThank you for reporting &f%arg-1% &afor &eFly[F]"
+                add 1 to {report.%arg-2%}
+                loop all players:
+                    if loop player has permission "ffa.seereport":
+                        send "&c[Report] &a%arg-2%&7[%{report.%arg-2%}%] &7for &aFly[F]" to loop-player
+            else if arg-3 is "Speed":
+                send "&aThank you for reporting &f%arg-1% &afor &eSpeed[S]"
+                add 1 to {report.%arg-2%}
+                loop all players:
+                    if loop player has permission "ffa.seereport":
+                        send "&c[Report] &a%arg-2%&7[%{report.%arg-2%}%] &7for &aSpeed[S]" to loop-player
+            else if arg-3 is "S":
+                send "&aThank you for reporting &f%arg-2% &afor &eSpeed[S]"
+                add 1 to {report.%arg-2%}
+                loop all players:
+                    if loop player has permission "ffa.seereport":
+                        send "&c[Report]&a%arg-2%&7[%{report.%arg-2%}%] &7for &aSpeed[S]" to loop-player
+                        
+
+on consume of golden apple:
+    if name of player's tool contains "&6Golden Head":
+        apply regeneration 2 to the player for 8 seconds
+
+on drop:
+	cancel event
+		
+on death:
+	if {joined.%player%} is "yes":
+		victim is a player
+		attacker is a player
+		add 1 to {kills.%attacker%}
+		add 1 to {deaths.%victim%}
+		heal attacker
+		if attacker is not "<none>":
+			set death message to "&c%victim%&4[%{kills.%victim%}%] &e{_killmessage.%attacker%} &c%attacker%&4[%{kills.%attacker%}%]"
+		send "&c%attacker% &ekilled you with &c%attacker's health% &4&l❤" to victim
+        send victim title"{_killmessagetitle.%attacker%}" for 3 seconds
+	else if {unranked.%player%} is "yes":
+		victim is a player
+		attacker is a player
+		add 1 to {kills2.%attacker%}
+		add 1 to {deaths2.%victim%}
+		heal attacker
+		if attacker is not "<none>":
+			set death message to "&c%victim%&4[%{kills2.%victim%}%] &7 {_killmessage.%attacker%} &c%attacker%&4[%{kills2.%attacker%}%]"
+		send "&c%attacker% &ekilled you with &c%attacker's health% &4&l❤" to victim
+        send victim title"{_killmessagetitle.%attacker%}" for 3 seconds
+		
+	
+on first join:
+	set {kills.%player%} to 0
+	set {deaths.%player%} to 0
+	set {kills2.%player%} to 0
+	set {deaths2.%player%} to 0
+	set {balance:%player%} to 500
+
+command /resetstats [<player>]:
+	trigger:
+		if player have permission "stats.reset":
+			if arg 1 is not set:
+				set {kills.%player%} to 0
+				set {deaths.%player%} to 0
+				send " &aYour stats have been reset" to player
+				stop
+			else:
+				set {kills.%arg 1%} to 0
+				set {deaths.%arg 1%} to 0
+				send " &e%arg 1% &astats have been reset" to player
+				stop
+		else:
+			send "&cYou don't have permission!" to player
+			
+command /stats [<text>]:
+	trigger:
+		open chest with 3 rows named "&cStats &7- &4%player%" to player
+		wait 2 ticks
+		format slot 11 of player with iron axe named "&7Unranked Stats" to run [make player execute "/ustats"]
+		format slot 15 of player with diamond axe named "&4Ranked Stats" to run [make player execute "/rstats"]
+			
+command /rstats [<text>]:
+	trigger:
+		open chest with 3 rows named "&cRanked Stats &7- &4%player%" to player
+		wait 2 ticks
+		format slot 11 of player with diamond sword named "&4&lKills" with lore "&7Number: &6%{kills.%player%}%" to close
+		format slot 13 of player with blaze rod named "&4&lRating" with lore "&7Rating: &6%{points.%player%}%" to close
+		format slot 15 of player with player's skull named "&4&lDeaths" with lore "&7Number: &6%{deaths.%player%}%" to close
+
+command /ustats [<text>]:
+	trigger:
+		open chest with 3 rows named "&cUnranked Stats &7- &4%player%" to player
+		wait 2 ticks
+		format slot 11 of player with diamond sword named "&4&lKills" with lore "&7Number: &6%{kills2.%player%}%" to close
+		format slot 15 of player with player's skull named "&4&lDeaths" with lore "&7Number: &6%{deaths2.%player%}%" to close
+		
+on hunger meter change:
+    cancel event
+	
+on load:
+	send "FFA ENABLE" to console
+	
+on damage of player:
+	wait 1 tick
+	attacker is a player:
+		if projectile exists:
+			wait 1 tick
+			victim is not dead:
+				message "&c%victim% &7is now at &c%health of victim% &4&l❤" to the attacker
+				stop
+				
+command /clearchat:
+	permission: chatclear.use
+	permission message: &4Error: &cNo Permission!
+	aliases: /cc
+	trigger:
+		loop 150 times:
+			broadcast ""
+			
+on death of player:
+    if attacker is a player:
+        strike lightning effect at victim
+		
+on projectile hit:
+	if projectile is arrow:
+		clear projectile
+		
+on weather change to rain or thunder:
+	cancel event
+	
+on chat:
+	cancel event
+	if {joined.%player%} is "no":
+		broadcast "&c%player's name% &8» &7%message%"
+	else if {joined.%player%} is "yes":
+		broadcast "&7(Ranked) &c%player's name% &8» &7%message%"
+	else if {unranked.%player%} is "no":
+		broadcast "&c%player's name% &8» &7%message%"
+	else if {unranked.%player%} is "yes":
+		broadcast "&7(Unranked) &c%player's name% &8» &7%message%"
+	stop
+	
+command /coins:
+	trigger:
+		send "&7   "
+		send "&7You have &c&l%{balance.%player%}% &7coins"
+		send "&7   "
+		
+command /setcoins [<player>] [<integer>]:
+	usage: &a/setpoints <player> <number>
+	trigger:
+		if player is op:
+			if arg 1 is set:
+				set {balance.%arg 1%} to arg 2
+				send "&7You have set the COINS of &c%arg 1% &7to &c%arg 2%"
+			else:
+				send "&7/setcoins <player> <number>"
+		else:
+			send "&cYou are no op."
+			
+command /setelo [<player>] [<integer>]:
+	usage: &a/setpoints <player> <number>
+	trigger:
+		if player is op:
+			if arg 1 is set:
+				set {points.%arg 1%} to arg 2
+				send "&7You have set the RATING of &c%arg 1% &7to &c%arg 2%"
+			else:
+				send "&7/setelo <player> <number>"
+		else:
+			send "&cYou are no op."
+			
+command /elo [<text>] [<player>]:
+	trigger:
+		if arg 1 is not set:
+            if arg 2 is set:
+			    send "&9[ELO] &7%arg 1% &anow have &9%{points.%arg 2%}% Elo!"
+		     else:
+			     send "&9[ELO] &7You now have &9%{points.%player%}% Elo!"
+        else if arg 1 is "rest":
+            if arg 2 is not set:
+                set points.%arg 2% to {_Elo}
+			
+command /resetelo <player>:
+	executable by: console
+	trigger:
+	
+		if arg 1 is set:
+			set {points.%arg 1%} to 500
+			send "&aYour rating has been reset!" to arg 1
+		else:
+			send "&a/resetelo <player> !"
+			
+on join:
+    if {_killmessage.%player%} is not set:
+        set {_killmessage.%player%} to "&7You have been slain by"
+    if "{_killmessagetitle.%player%}" is not set:
+        set {_killmessagetitle.%player%} to "&7You died"
+    if {points.%player%} is not set:
+		set {points.%player%} to 500
+		
+on death:
+	if {joined.%player%} is "yes":
+		attacker is a player
+		victim is a player
+		add 10 to {points.%attacker%}
+		send "&a%{points.%attacker%}% &aRating &8[&e+10&8]" to attacker
+		remove 5 from {points.%victim%}
+		send "&a%{points.%victim%}% &cRating &8[&c-5&8])" to victim
+	else if {joined.%player%} is "no":
+		send "&7"
+		
